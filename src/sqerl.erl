@@ -485,10 +485,25 @@ param(Key) when is_atom(Key) ->
 param(Value) ->
     encode(Value).
 
-quote(String) when is_list(String) ->
+
+quote("?") ->
+    "?";
+quote(Binding = [$$ | Num]) ->
+    case list_to_integer(Num) of
+	Int when is_integer(Int),
+		 Int > 0 -> 
+	    Binding;
+	_ -> quote(Binding, last)
+    end.
+	
+quote(Other) ->
+    quote(Other, last).
+	
+
+quote(String, last) when is_list(String) ->
     [$' | lists:reverse([$' | quote(String, [])])];
-quote(Bin) when is_binary(Bin) ->
-    list_to_binary(quote(binary_to_list(Bin))).
+quote(Bin, last) when is_binary(Bin) ->
+    list_to_binary(quote(binary_to_list(Bin)));
 
 quote([], Acc) ->
     Acc;
