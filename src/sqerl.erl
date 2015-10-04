@@ -494,8 +494,7 @@ quote(Binding = [$$ | Num]) ->
 		 Int > 0 -> 
 	    Binding;
 	_ -> quote(Binding, last)
-    end.
-	
+    end;
 quote(Other) ->
     quote(Other, last).
 	
